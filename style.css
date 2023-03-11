@@ -1,0 +1,31 @@
+html {
+	/* height: -webkit-fill-available; */
+	user-select: none;
+}
+
+body {
+	/* min-height: 100vh; */
+	/* min-height: -webkit-fill-available; */
+}
+  
+main {
+	display: flex;
+	flex-wrap: nowrap;
+	height: 100vh;
+	height: -webkit-fill-available;
+	max-height: 100vh;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+  
+#workspace {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
+canvas {
+	display: block;
+}
