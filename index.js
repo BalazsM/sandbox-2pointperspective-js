@@ -1,4 +1,3 @@
-// TODO: object seed
 // TODO: linear / logarithmic perspective (geometric/artihmetic)
 // TODO: hide non visible edges based on face visibility detection, not like this how it works now
 
