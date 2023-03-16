@@ -1,6 +1,6 @@
 // TODO: object seed
-// TODO: move objects (bounce)
-// TODO: objects count
+// TODO: linear / logarithmic perspective (geometric/artihmetic)
+// TODO: hide non visible edges based on face visibility detection, not like this how it works now
 
 // --  globals  --------------------------------------------------------------
 
@@ -12,6 +12,8 @@ let topViewpoint;
 let bottomViewpoint;
 let gridSize;
 let grid;
+let objectsSeed;
+let objectsCount;
 let objects;
 
 let pX;
@@ -99,46 +101,65 @@ function updateGrid() {
 	}
 }
 
+function updateObjects() {
+	randomSeed(objectsSeed);
+
+	objects = new Array();
+
+	while (objects.length < objectsCount) {
+		let sx = Math.floor(1 + random(gridSize / 4));
+		let sy = Math.floor(1 + random(gridSize / 4));
+		let sz = Math.floor(1 + random(gridSize / 4));
+
+		let px = Math.floor(random(gridSize - sx));
+		let py = Math.floor(random(gridSize - sy));
+		let pz = Math.floor(random(gridSize - sz));
+
+		objects.push({
+			vertices: [
+				{ x: px,      y: py,      z: pz },
+				{ x: px + sx, y: py,      z: pz },
+				{ x: px + sx, y: py,      z: pz + sz },
+				{ x: px,      y: py,      z: pz + sz },
+				{ x: px,      y: py + sy, z: pz },
+				{ x: px + sx, y: py + sy, z: pz },
+				{ x: px + sx, y: py + sy, z: pz + sz },
+				{ x: px,      y: py + sy, z: pz + sz }
+			],
+
+			edges: [
+				{ s: 0, e: 1, d: 'f' },
+				{ s: 1, e: 2, d: 'f' },
+				{ s: 2, e: 3, d: 'f' },
+				{ s: 3, e: 0, d: 'f' },
+
+				{ s: 4, e: 5, d: 't' },
+				{ s: 5, e: 6, d: 'n' },
+				{ s: 6, e: 7, d: 'b' },
+				{ s: 7, e: 4, d: 'f' },
+
+				{ s: 0, e: 4, d: 'f' },
+				{ s: 1, e: 5, d: 't' },
+				{ s: 2, e: 6, d: 'b' },
+				{ s: 3, e: 7, d: 'f' },
+			],
+
+			faces: [
+
+			]
+		});
+	}
+}
+
 // -- event handlers  --------------------------------------------------------
 
 function setup() {
 	let canvas = createCanvas(windowWidth, windowHeight);
 	canvas.parent('workspace');
 
-	objects = new Array();
-	for (let i = 0; i < 3; i++) { // TODO: 3-> number of objects
-		objects.push({
-			vertices: [
-				{ x: 0, y: 0, z: 0 },
-				{ x: 1, y: 0, z: 0 },
-				{ x: 1, y: 0, z: 1 },
-				{ x: 0, y: 0, z: 1 },
-				{ x: 0, y: 1, z: 0 },
-				{ x: 1, y: 1, z: 0 },
-				{ x: 1, y: 1, z: 1 },
-				{ x: 0, y: 1, z: 1 }
-			],
-
-			edges: [
-				{ s: 0, e: 1 },
-				{ s: 1, e: 2 },
-				{ s: 2, e: 3 },
-				{ s: 3, e: 0 },
-
-				{ s: 4, e: 5 },
-				{ s: 5, e: 6 },
-				{ s: 6, e: 7 },
-				{ s: 7, e: 4 },
-
-				{ s: 0, e: 4 },
-				{ s: 1, e: 5 },
-				{ s: 2, e: 6 },
-				{ s: 3, e: 7 },
-			]
-		});
-	}
-
 	smooth();
+
+	updateObjects();
 }
 
 function windowResized() {
@@ -189,19 +210,51 @@ function draw() {
 		}
 	}
 
-	stroke(255, 0, 0);
+	if (showObjectLines.checked) {
+		stroke(0, 0, 0, 64);
+		strokeWeight(1);
+		for (let object of objects) {
+			for (let vertex of object.vertices) {
+				let g = grid[vertex.x][vertex.y][vertex.z];
+				line(rightX, horizontalY, g.x, g.y);
+				line(leftX, horizontalY, g.x, g.y);
+			}
+		}
+	}
+
+	stroke(0, 0, 0);
 	strokeWeight(2);
 	for (let object of objects) {
-		for (let vertex of object.vertices) {
-			let g = grid[vertex.x][vertex.y][vertex.z];
-			ellipse(g.x, g.y, 5, 5)
+		if (showObjectPoints.checked) {
+			for (let vertex of object.vertices) {
+				let g = grid[vertex.x][vertex.y][vertex.z];
+				ellipse(g.x, g.y, 5, 5)
+			}
 		}
 		for (let edge of object.edges) {
+			let display = false;
+
 			const vs = object.vertices[edge.s];
 			const gs = grid[vs.x][vs.y][vs.z];
 			const ve = object.vertices[edge.e];
 			const ge = grid[ve.x][ve.y][ve.z];
-			line(gs.x, gs.y, ge.x, ge.y);
+
+			switch (edge.d) {
+				case 'n':
+					break;
+				case 'f':
+					display = true; 
+					break;
+				case 't':
+					display = gs.y > horizontalY && ge.y > horizontalY;
+					break;
+				case 'b':
+					display = gs.y < horizontalY && ge.y < horizontalY;
+					break;
+			}
+
+			if (display)
+				line(gs.x, gs.y, ge.x, ge.y);
 		}
 	}
 
@@ -241,49 +294,66 @@ function draw() {
 // --  gui sync  -------------------------------------------------------------
 
 function updateGlobals() {
-	let update = false;
+	let updateGS = false;
+	let updateG = false;
+	let updateO = false;
 
 	let t = gridSizeInput.value * 1.0;
 	if (t != gridSize) {
 		gridSize = t;
-		updateGridSize();
-		update = true;
+		updateGS = true;;
+		updateG = true;
 	}
 
 	t = horizontalLineInput.value * 1.0
 	if (t != horizontalLine) {
 		horizontalLine = t;
-		update = true;
+		updateG = true;
 	}
 	t = verticalLineInput.value * 1.0;
 	if (t != verticalLine) {
 		verticalLine = t;
-		update = true;		
+		updateG = true;		
 	}
 	t = leftViewPointInput.value * 1.0;
 	if (t != leftViewpoint) {
 		leftViewpoint = t;
-		update = true;		
+		updateG = true;		
 	}
 	t = rightViewPointInput.value * 1.0;
 	if (t != rightViewpoint) {
 		rightViewpoint = t;
-		update = true;		
+		updateG = true;		
 	}
 	t = topViewPointInput.value * 1.0;
 	if (t != topViewpoint) {
 		topViewpoint = t;
-		update = true;		
+		updateG = true;		
 	}
 	t = bottomViewPointInput.value * 1.0;
 	if (t != bottomViewpoint) {
 		bottomViewpoint = t;
-		update = true;		
+		updateG = true;		
 	}
 
-	if (update) {
-		updateGrid()
+	t = objectsSeedInput.value * 1.0;
+	if (t != objectsSeed) {
+		objectsSeed = t;
+		updateO = true;
 	}
+
+	t = objectsCountInput.value * 1.0;
+	if (t != objectsCount) {
+		objectsCount = t;
+		updateO = true;
+	}
+
+	if (updateGS)
+		updateGridSize();
+	if (updateG)
+		updateGrid();
+	if (updateO)
+		updateObjects();
 }
 
 function updateDisplays() {
@@ -295,6 +365,8 @@ function updateDisplays() {
 	topViewPointOutput.innerHTML = topViewpoint.toFixed(2);
 	bottomViewPointOutput.innerHTML = bottomViewpoint.toFixed(2);
 	gridSizeOutput.innerHTML = gridSize.toFixed(0);
+	objectsSeedOutput.innerHTML = objectsSeed.toFixed(0);
+	objectsCountOutput.innerHTML = objectsCount.toFixed(0);
 }
 
 // ---------------------------------------------------------------------------
