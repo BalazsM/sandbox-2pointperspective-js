@@ -1,4 +1,4 @@
-// TODO: linear / logarithmic perspective (geometric/artihmetic)
+// TODO: linear / even perspective
 // TODO: hide non visible edges based on face visibility detection, not like this how it works now
 
 // --  globals  --------------------------------------------------------------
@@ -64,16 +64,42 @@ function updateGrid() {
 	}
 
 	for (let z = 0; z < gridSize; z++) {
+		
+// TODO: name this to even
+
+		const leftXDelta = (leftX - pZ[z].x) / (gridSize - 1);
+		const rightXDelta = (rightX - pZ[z].x) / (gridSize - 1);
+		const yDelta = (horizontalY - pZ[z].y) / (gridSize - 1);
+
 		for (let i = 0; i < gridSize; i++) {
 			pX[i] = {
-				x : pZ[z].x + (leftX - pZ[z].x) / (gridSize - 1) * i,
-				y : pZ[z].y + (horizontalY - pZ[z].y) / (gridSize - 1) * i
+				x : pZ[z].x + leftXDelta * i,
+				y : pZ[z].y + yDelta * i
 			};
 			pY[i] = {
-				x : pZ[z].x + (rightX - pZ[z].x) / (gridSize - 1) * i,
-				y : pZ[z].y + (horizontalY - pZ[z].y) / (gridSize - 1) * i
+				x : pZ[z].x + rightXDelta * i,
+				y : pZ[z].y + yDelta * i
 			};
 		}
+/*
+		const leftMuler = (bottomY - topY) / dist(leftX, horizontalY, verticalX, bottomY);
+		const leftXDelta = (leftX - pZ[z].x) * leftMuler / (gridSize - 1);
+		const leftYDelta = (horizontalY - pZ[z].y) * leftMuler / (gridSize - 1);
+		const rightMuler = (bottomY - topY) / dist(rightX, horizontalY, verticalX, bottomY);
+		const rightXDelta = (rightX - pZ[z].x) * rightMuler / (gridSize - 1);
+		const rightYDelta = (horizontalY - pZ[z].y) * rightMuler / (gridSize - 1);
+
+		for (let i = 0; i < gridSize; i++) {
+			pX[i] = {
+				x : pZ[z].x + leftXDelta * i,
+				y : pZ[z].y + leftYDelta * i
+			};
+			pY[i] = {
+				x : pZ[z].x + rightXDelta * i,
+				y : pZ[z].y + rightYDelta * i
+			};
+		}
+*/
 
 		let g = grid[0][0][z];
 		g.x = pZ[z].x;
@@ -106,9 +132,15 @@ function updateObjects() {
 	objects = new Array();
 
 	while (objects.length < objectsCount) {
-		let sx = Math.floor(1 + random(gridSize / 4));
-		let sy = Math.floor(1 + random(gridSize / 4));
-		let sz = Math.floor(1 + random(gridSize / 4));
+		let sx = 1 + Math.floor(random(gridSize / 4));
+		let sy = 1 + Math.floor(random(gridSize / 4));
+		let sz = 1 + Math.floor(random(gridSize / 4));
+		// let sx = 1 + objects.length;
+		// let sy = 1 + objects.length;
+		// let sz = 1 + objects.length;
+		// let sx = 1;
+		// let sy = 1;
+		// let sz = 1;
 
 		let px = Math.floor(random(gridSize - sx));
 		let py = Math.floor(random(gridSize - sy));
@@ -196,7 +228,7 @@ function draw() {
 	}
 
 	if (showGridPoints.checked) {
-		stroke(0);
+		stroke(0, 0, 0, 64);
 		strokeWeight(1);
 		noFill();
 		for (let x = 0; x < gridSize; x++) {
@@ -302,6 +334,7 @@ function updateGlobals() {
 		gridSize = t;
 		updateGS = true;;
 		updateG = true;
+		updateO = true;
 	}
 
 	t = horizontalLineInput.value * 1.0
