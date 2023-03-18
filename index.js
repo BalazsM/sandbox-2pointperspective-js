@@ -81,11 +81,12 @@ function updateGrid() {
 				y : pZ[z].y + yDelta * i
 			};
 		}
+
 /*
-		const leftMuler = (bottomY - topY) / dist(leftX, horizontalY, verticalX, bottomY);
-		const leftXDelta = (leftX - pZ[z].x) * leftMuler / (gridSize - 1);
-		const leftYDelta = (horizontalY - pZ[z].y) * leftMuler / (gridSize - 1);
-		const rightMuler = (bottomY - topY) / dist(rightX, horizontalY, verticalX, bottomY);
+		const leftMuler = (bottomY - topY) / (verticalX - leftX);
+		const leftXDelta = (leftX - pZ[z].x) / (gridSize - 1);
+		const leftYDelta = (horizontalY - pZ[z].y) / (gridSize - 1);
+		const rightMuler = (bottomY - topY) / (rightX - verticalX);
 		const rightXDelta = (rightX - pZ[z].x) * rightMuler / (gridSize - 1);
 		const rightYDelta = (horizontalY - pZ[z].y) * rightMuler / (gridSize - 1);
 
@@ -100,7 +101,6 @@ function updateGrid() {
 			};
 		}
 */
-
 		let g = grid[0][0][z];
 		g.x = pZ[z].x;
 		g.y = pZ[z].y;
