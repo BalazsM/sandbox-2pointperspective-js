@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>4 point perspective</title>
+		<title>2 point perspective</title>
 
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
@@ -17,11 +17,11 @@
 
 		<div class="d-flex flex-column flex-shrink-0 m-2 ms-auto h-100 z-1 card opacity-75" style="width: 400px; height: 90%;">
 			<div class="card-body">
-				<span class="display-6">4 point perspective</span>
+				<span class="display-6">2 point perspective</span>
 	
 				<div class="d-flex justify-content-center m-2">
 					<div><a href="https://cubie.hu" class="link-secondary m-2">2023 cuBie</a></div>
-					<div><a href="https://github.com/BalazsM/sandbox-4pointperspective-js" class="link-primary m-2">source code</a></div>
+					<div><a href="https://github.com/BalazsM/sandbox-2pointperspective-js" class="link-primary m-2">source code</a></div>
 				</div>
 
 				<h4>Stats</h4>
@@ -47,22 +47,22 @@
 						<td id="verticalLineOutput" class="text-end"></td>
 					</tr>
 					<tr>
-						<td>Left viewpoint</td>
+						<td>Left vanishing point</td>
 						<td><input type="range" id="leftViewPointInput" class="form-range" min="-100" max="100" value="5" step="1"></td>
 						<td id="leftViewPointOutput" class="text-end"></td>
 					</tr>
 					<tr>
-						<td>Right viewpoint</td>
+						<td>Right vanishing point</td>
 						<td><input type="range" id="rightViewPointInput" class="form-range" min="-100" max="100" value="-5" step="1"></td>
 						<td id="rightViewPointOutput" class="text-end"></td>
 					</tr>
 					<tr>
-						<td>Top viewpoint</td>
+						<td>Top control point</td>
 						<td><input type="range" id="topViewPointInput" class="form-range" min="-100" max="100" value="5" step="1"></td>
 						<td id="topViewPointOutput" class="text-end"></td>
 					</tr>
 					<tr>
-						<td>Bottom viewpoint</td>
+						<td>Bottom control point</td>
 						<td><input type="range" id="bottomViewPointInput" class="form-range" min="-100" max="100" value="-5" step="1"></td>
 						<td id="bottomViewPointOutput" class="text-end"></td>
 					</tr>
@@ -87,7 +87,7 @@
 						<td></td>
 					</tr> -->
 					<tr>
-						<td>Show control points</td>
+						<td>Show vanishing points</td>
 						<td></td>
 						<td class="text-end"><input type="checkbox" id="showControlPoints" checked></td>
 					</tr>

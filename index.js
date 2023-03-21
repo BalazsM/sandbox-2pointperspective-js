@@ -307,16 +307,12 @@ function draw() {
 		fill(255);
 		ellipse(leftX, horizontalY, 20, 20);
 		ellipse(rightX, horizontalY, 20, 20);
-		ellipse(verticalX, topY, 20, 20);
-		ellipse(verticalX, bottomY, 20, 20);
 
 		fill(0);
 		rectMode(CENTER);
 		textAlign(CENTER, CENTER);
 		text('1', leftX, horizontalY);
 		text('2', rightX, horizontalY);
-		text('3', verticalX, topY);
-		text('4', verticalX, bottomY);
 	}
 	
 	updateDisplays();
