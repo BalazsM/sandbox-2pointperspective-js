@@ -1,2 +1,2 @@
-# sandbox-4pointperspective-js
- 4 point perspective experiment
+# sandbox-2pointperspective-js
+ 2 point perspective experiment
